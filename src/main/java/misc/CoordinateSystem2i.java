@@ -3,12 +3,14 @@ package misc;
 import io.github.humbleui.skija.RRect;
 import io.github.humbleui.skija.Rect;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Objects;
 
 /**
  * Ограниченная двумерная целочисленная система координат
  */
-public class CoordinateSystem2i {
+public class CoordinateSystem2i extends JComponent {
     /**
      * максимальная координата
      */

@@ -3,12 +3,13 @@ package misc;
 import io.github.humbleui.jwm.Event;
 import io.github.humbleui.jwm.EventMouseMove;
 
+import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Класс двумерного вектора int
  */
-public class Vector2i {
+public class Vector2i extends Dimension {
     /**
      * x - координата вектора
      */
