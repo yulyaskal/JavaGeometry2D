@@ -54,6 +54,10 @@ public class Application implements Consumer<Event> {
     /**
      * Конструктор окна приложения
      */
+    /**
+     * Представление проблемы
+     */
+    public static Task task;
     public Application() {
         // создаём окно
         window = App.makeWindow();
