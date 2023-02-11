@@ -22,6 +22,11 @@ public class Colors {
     /**
      * Запрещённый конструктор
      */
+
+    /**
+     * Цвет текста
+     */
+    public static final int MULTILINE_TEXT_COLOR = Misc.getColor(64, 255, 255, 255);
     private Colors() {
         throw new AssertionError("Вызов этого конструктора запрещён");
 
