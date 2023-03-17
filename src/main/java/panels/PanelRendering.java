@@ -57,7 +57,10 @@ public class PanelRendering extends GridPanel {
             // добавляем точку в случайном месте ОСК в указанное множество
             points.add(new Point(cs.getRandomCoords(), pointSet));
         }
-        task = new Task(cs, points);
+        // создаём задачу без точек
+        task = new Task(cs, new ArrayList<>());
+        // добавляем в нё 10 случайных
+        task.addRandomPoints(10);
 
     }
 
