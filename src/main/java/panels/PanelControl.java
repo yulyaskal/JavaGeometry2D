@@ -1,6 +1,7 @@
 package panels;
 
 import app.Point;
+import app.Rect;
 import app.Task;
 
 import java.util.ArrayList;
@@ -71,88 +72,103 @@ public class PanelControl extends GridPanel {
         // задание
         task = new MultiLineLabel(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 0, 6, 2, Task.TASK_TEXT,
+                6, 9, 0, 0, 6, 2, Task.TASK_TEXT,
                 false, true);
         // добавление вручную
-        Label x1Label = new Label(window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 2, 1, 1, "x1", true, true);
-        labels.add(x1Label);
-        Input x1Field = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
-                6, 7, 1, 2, 2, 1, "0.0", true,
+        Label xALabel = new Label(window, false, backgroundColor, PANEL_PADDING,
+                6, 9, 0, 2, 1, 1, "xA", true, true);
+        labels.add(xALabel);
+        Input xAField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
+                6, 9, 1, 2, 2, 1, "0.0", true,
                 FIELD_TEXT_COLOR, true);
-        inputs.add(x1Field);
-        Label y1Label = new Label(window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 3, 2, 1, 1, "y1", true, true);
-        labels.add(y1Label);
-        Input y1Field = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
-                6, 7, 4, 2, 2, 1, "0.0", true,
+        inputs.add(xAField);
+        Label yALabel = new Label(window, false, backgroundColor, PANEL_PADDING,
+                6, 9, 3, 2, 1, 1, "yA", true, true);
+        labels.add(yALabel);
+        Input yAField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
+                6, 9, 4, 2, 2, 1, "0.0", true,
                 FIELD_TEXT_COLOR, true);
-        inputs.add(y1Field);
-        Label x2Label = new Label(window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 3, 1, 1, "x2", true, true);
-        labels.add(x2Label);
-        Input x2Field = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
-                6, 7, 1, 3, 2, 1, "0.0", true,
+        inputs.add(yAField);
+        Label xBLabel = new Label(window, false, backgroundColor, PANEL_PADDING,
+                6, 9, 0, 3, 1, 1, "xB", true, true);
+        labels.add(xBLabel);
+        Input xBField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
+                6, 9, 1, 3, 2, 1, "0.0", true,
                 FIELD_TEXT_COLOR, true);
-        inputs.add(x2Field);
-        Label y2Label = new Label(window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 3, 3, 1, 1, "y2", true, true);
-        labels.add(y2Label);
-        Input y2Field = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
-                6, 7, 4, 3, 2, 1, "0.0", true,
+        inputs.add(xBField);
+        Label yBLabel = new Label(window, false, backgroundColor, PANEL_PADDING,
+                6, 9, 3, 3, 1, 1, "yB", true, true);
+        labels.add(yBLabel);
+        Input yBField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
+                6, 9, 4, 3, 2, 1, "0.0", true,
                 FIELD_TEXT_COLOR, true);
-        inputs.add(y2Field);
+        inputs.add(yBField);
+        Label xPLabel = new Label(window, false, backgroundColor, PANEL_PADDING,
+                6, 9, 0, 4, 1, 1, "xP", true, true);
+        labels.add(xPLabel);
+        Input xPField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
+                6, 9, 1, 4, 2, 1, "0.0", true,
+                FIELD_TEXT_COLOR, true);
+        inputs.add(xPField);
+        Label yPLabel = new Label(window, false, backgroundColor, PANEL_PADDING,
+                6, 9, 3, 4, 1, 1, "yP", true, true);
+        labels.add(yPLabel);
+        Input yPField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
+                6, 9, 4, 4, 2, 1, "0.0", true,
+                FIELD_TEXT_COLOR, true);
+        inputs.add(yPField);
 
-        Button addToFirstSet = new Button(
+        Button addRect = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 4, 6, 1, "Добавить прямоугольник",
+                6, 9, 0, 5, 6, 1, "Добавить прямоугольник",
                 true, true);
-        addToFirstSet.setOnClick(() -> {
+        addRect.setOnClick(() -> {
             // если числа введены верно
-            if (!x1Field.hasValidDoubleValue()) {
-                PanelLog.warning("X координата введена неверно");
-            } else if (!y1Field.hasValidDoubleValue())
-                PanelLog.warning("Y координата введена неверно");
-            else
-                PanelRendering.task.addPoint(
-                        new Vector2d(x1Field.doubleValue(), y1Field.doubleValue()), Point.PointSet.FIRST_SET
+            if (!xAField.hasValidDoubleValue()) {
+                PanelLog.warning("xA координата введена неверно");
+            } else if (!yAField.hasValidDoubleValue())
+                PanelLog.warning("yA координата введена неверно");
+            else if (!xBField.hasValidDoubleValue())
+                PanelLog.warning("xB координата введена неверно");
+            else if (!yBField.hasValidDoubleValue())
+                PanelLog.warning("yB координата введена неверно");
+            else if (!xPField.hasValidDoubleValue())
+                PanelLog.warning("xP координата введена неверно");
+            else if (!yPField.hasValidDoubleValue())
+                PanelLog.warning("yP координата введена неверно");
+            /*else {
+                PanelRendering.task.addRect(
+                        new Vector2d(xAField.doubleValue(), yAField.doubleValue()), new Vector2d(xBField.doubleValue(), yBField.doubleValue()), new Vector2d(xPField.doubleValue(), yPField.doubleValue())
                 );
-            if (!x2Field.hasValidDoubleValue()) {
-                PanelLog.warning("X координата введена неверно");
-            } else if (!y2Field.hasValidDoubleValue())
-                PanelLog.warning("Y координата введена неверно");
-            else
-                PanelRendering.task.addPoint(
-                        new Vector2d(x2Field.doubleValue(), y2Field.doubleValue()), Point.PointSet.FIRST_SET
-                );
+            }*/
         });
-        buttons.add(addToFirstSet);
+        buttons.add(addRect);
         // случайное добавление
         Label cntLabel = new Label(window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 5, 1, 1, "Кол-во", true, true);
+                6, 9, 0, 6, 1, 1, "Кол-во", true, true);
         labels.add(cntLabel);
 
         Input cntField = InputFactory.getInput(window, false, FIELD_BACKGROUND_COLOR, PANEL_PADDING,
-                6, 7, 1, 5, 2, 1, "5", true,
+                6, 9, 1, 6, 2, 1, "5", true,
                 FIELD_TEXT_COLOR, true);
         inputs.add(cntField);
 
-        Button addPoints = new Button(
+        Button addRects = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 3, 5, 3, 1, "Добавить\nслучайные прямоугольники",
+                6, 9, 3, 6, 3, 1, "Добавить\nслучайные прямоугольники",
                 true, true);
-        addPoints.setOnClick(() -> {
+        addRects.setOnClick(() -> {
             // если числа введены верно
             if (!cntField.hasValidIntValue()) {
-                PanelLog.warning("кол-во точек указано неверно");
-            } else
-                PanelRendering.task.addRandomPoints(cntField.intValue());
+                PanelLog.warning("кол-во прямоугольников указано неверно");
+            } /*else
+                PanelRendering.task.addRandomRects(cntField.intValue());*/
         });
-        buttons.add(addPoints);
+        buttons.add(addRects);
         // управление
         Button load = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 6, 3, 1, "Загрузить",
+                6, 9, 0, 7, 3, 1, "Загрузить",
                 true, true);
         load.setOnClick(() -> {
             PanelRendering.load();
@@ -162,21 +178,21 @@ public class PanelControl extends GridPanel {
 
         Button save = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 3, 6, 3, 1, "Сохранить",
+                6, 9, 3, 7, 3, 1, "Сохранить",
                 true, true);
         save.setOnClick(PanelRendering::save);
         buttons.add(save);
 
         Button clear = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 0, 7, 3, 1, "Очистить",
+                6, 9, 0, 8, 3, 1, "Очистить",
                 true, true);
         clear.setOnClick(() -> PanelRendering.task.clear());
         buttons.add(clear);
 
         solve = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
-                6, 7, 3, 7, 3, 1, "Решить",
+                6, 9, 3, 8, 3, 1, "Решить",
                 true, true);
         solve.setOnClick(() -> {
             if (!PanelRendering.task.isSolved()) {
@@ -221,7 +237,7 @@ public class PanelControl extends GridPanel {
             // пробуем кликнуть по всем кнопкам
             for (Button button : buttons) {
                 button.click(relPos);
-           }
+            }
 
             // перебираем поля ввода
             for (Input input : inputs) {
