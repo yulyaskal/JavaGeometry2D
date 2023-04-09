@@ -34,7 +34,48 @@ public class Vector2d {
         this.x = 0;
         this.y = 0;
     }
-
+    public Vector2d(Vector2i v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+    /**
+     * Получить целочисленный вектор
+     *
+     * @return целочисленный вектор
+     */
+    public Vector2i intVector() {
+        return new Vector2i((int) x, (int) y);
+    }
+    /**
+     * Повернуть вектор
+     *
+     * @param a угол
+     * @return повёрнутый вектор
+     */
+    public Vector2d rotated(double a) {
+        return new Vector2d(
+                x * Math.cos(a) - y * Math.sin(a),
+                x * Math.sin(a) + y * Math.cos(a)
+        );
+    }
+    /**
+     * Нормализация вектора
+     *
+     * @return нормированный вектор
+     */
+    public Vector2d norm() {
+        double length = length();
+        return new Vector2d(x / length, y / length);
+    }
+    /**
+     * Векторное умножение векторов
+     *
+     * @param v второй вектор
+     * @return результат умножения
+     */
+    public double cross(Vector2d v) {
+        return this.x * v.y - this.y * v.x;
+    }
     /**
      * Сложить два вектора
      *
@@ -87,10 +128,19 @@ public class Vector2d {
      * @return результат умножения вектора на число
      */
 
-    public static Vector2d mul(Vector2d v, double a) {
+    public static Vector2d mult(Vector2d v, double a) {
         return new Vector2d(v.x * a, v.y * a);
     }
 
+    /**
+     * Умножение данного вектора на число
+     *
+     * @param a число
+     * @return результат умножения вектора на число
+     */
+    public Vector2d mult(double a) {
+        return new Vector2d(this.x * a, this.y * a);
+    }
     /**
      * Получить случайное значение в заданном диапазоне [min,max)
      *

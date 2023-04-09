@@ -48,6 +48,11 @@ public class Task {
     @Getter
     private final ArrayList<Point> points;
     /**
+     * Список прямоугольников
+     */
+    @Getter
+    private final ArrayList<app.Rect> rects;
+    /**
      * Размер точки
      */
     private static final int POINT_SIZE = 3;
@@ -73,6 +78,12 @@ public class Task {
     @JsonIgnore
     private final ArrayList<Point> single;
     /**
+     * Список точек пересечения
+     */
+    @Getter
+    @JsonIgnore
+    private final ArrayList<Vector2d> interPoints;
+    /**
      * Задача
      *
      * @param ownCS  СК задачи
@@ -81,12 +92,15 @@ public class Task {
     @JsonCreator
     public Task(
             @JsonProperty("ownCS") CoordinateSystem2d ownCS,
-            @JsonProperty("points") ArrayList<Point> points
+            @JsonProperty("points") ArrayList<Point> points,
+            @JsonProperty("rects") ArrayList<app.Rect> rects
     ) {
         this.ownCS = ownCS;
         this.points = points;
+        this.rects = rects;
         this.crossed = new ArrayList<>();
         this.single = new ArrayList<>();
+        this.interPoints = new ArrayList<>();
     }
 
     /**
