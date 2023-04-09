@@ -18,8 +18,7 @@ import panels.PanelLog;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static app.Colors.CROSSED_COLOR;
-import static app.Colors.SUBTRACTED_COLOR;
+import static app.Colors.*;
 
 /**
  * Класс задачи
@@ -116,20 +115,38 @@ public class Task {
         canvas.save();
         // создаём перо
         try (var paint = new Paint()) {
-            for (Point p : points) {
-                if (!solved) {
-                    paint.setColor(p.getColor());
-                } else {
-                    if (crossed.contains(p))
-                        paint.setColor(CROSSED_COLOR);
-                    else
-                        paint.setColor(SUBTRACTED_COLOR);
-                }
+            for (app.Rect r : rects) {
                 // y-координату разворачиваем, потому что у СК окна ось y направлена вниз,
                 // а в классическом представлении - вверх
-                Vector2i windowPos = windowCS.getCoords(p.pos.x, p.pos.y, ownCS);
-                // рисуем точку
-                canvas.drawRect(Rect.makeXYWH(windowPos.x - POINT_SIZE, windowPos.y - POINT_SIZE, POINT_SIZE * 2, POINT_SIZE * 2), paint);
+                Vector2i windowPosA = windowCS.getCoords(r.pointA.x, r.pointA.y, ownCS);
+                Vector2i windowPosB = windowCS.getCoords(r.pointB.x, r.pointB.y, ownCS);
+                Vector2i windowPosP = windowCS.getCoords(r.pointP.x, r.pointP.y, ownCS);
+                // создаём линию
+                Line line = new Line(new Vector2d(windowPosA), new Vector2d(windowPosB));
+                // рассчитываем расстояние от прямой до точки
+                double dist = line.getDistance(new Vector2d(windowPosP));
+                // рассчитываем векторы для векторного умножения
+                Vector2d AB = Vector2d.subtract(new Vector2d(windowPosB), new Vector2d(windowPosA));
+                Vector2d AP = Vector2d.subtract(new Vector2d(windowPosP), new Vector2d(windowPosA));
+                // определяем направление смещения
+                double direction = Math.signum(AB.cross(AP));
+                // получаем вектор смещения
+                Vector2i offset = AB.rotated(Math.PI / 2 * direction).norm().mult(dist).intVector();
+
+                // находим координаты вторых двух вершин прямоугольника
+                Vector2i pointC = Vector2i.sum(windowPosB, offset);
+                Vector2i pointD = Vector2i.sum(windowPosA, offset);
+                //запоминаем координаты всех четырех вершин
+                r.pA = windowPosA;
+                r.pB = windowPosB;
+                r.pC = pointC;
+                r.pD = pointD;
+                paint.setColor(LABEL_TEXT_COLOR);
+                // рисуем его стороны
+                canvas.drawLine(windowPosA.x, windowPosA.y, windowPosB.x, windowPosB.y, paint);
+                canvas.drawLine(windowPosB.x, windowPosB.y, pointC.x, pointC.y, paint);
+                canvas.drawLine(pointC.x, pointC.y, pointD.x, pointD.y, paint);
+                canvas.drawLine(pointD.x, pointD.y, windowPosA.x, windowPosA.y, paint);
             }
         }
         canvas.restore();
@@ -147,6 +164,20 @@ public class Task {
         points.add(newPoint);
         // Добавляем в лог запись информации
         PanelLog.info("точка " + newPoint + " добавлена в " + newPoint.getSetName());
+    }
+    /**
+     * Добавить прямоугольник
+     *
+     * @param pointA    угол прямоугольника
+     * @param pointB    угол прямоугольника
+     * @param pointP    точка на другой стороне прямоугольника
+     */
+    public void addRect(Vector2d pointA, Vector2d pointB, Vector2d pointP) {
+        solved = false;
+        app.Rect newRect = new app.Rect(pointA, pointB, pointP);
+        rects.add(newRect);
+        // Добавляем в лог запись информации
+        PanelLog.info("Прямоугольник " + newRect + " добавлен");
     }
     /**
      * Клик мыши по пространству задачи
