@@ -136,11 +136,11 @@ public class PanelControl extends GridPanel {
                 PanelLog.warning("xP координата введена неверно");
             else if (!yPField.hasValidDoubleValue())
                 PanelLog.warning("yP координата введена неверно");
-            /*else {
+            else {
                 PanelRendering.task.addRect(
                         new Vector2d(xAField.doubleValue(), yAField.doubleValue()), new Vector2d(xBField.doubleValue(), yBField.doubleValue()), new Vector2d(xPField.doubleValue(), yPField.doubleValue())
                 );
-            }*/
+            }
         });
         buttons.add(addRect);
         // случайное добавление
@@ -161,8 +161,8 @@ public class PanelControl extends GridPanel {
             // если числа введены верно
             if (!cntField.hasValidIntValue()) {
                 PanelLog.warning("кол-во прямоугольников указано неверно");
-            } /*else
-                PanelRendering.task.addRandomRects(cntField.intValue());*/
+            } else
+                PanelRendering.task.addRandomRects(cntField.intValue());
         });
         buttons.add(addRects);
         // управление

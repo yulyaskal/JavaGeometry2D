@@ -202,27 +202,31 @@ public class Task {
      *
      * @param cnt кол-во случайных точек
      */
-    public void addRandomPoints(int cnt) {
+    public void addRandomRects(int cnt) {
         // если создавать точки с полностью случайными координатами,
         // то вероятность того, что они совпадут крайне мала
         // поэтому нужно создать вспомогательную малую целочисленную ОСК
         // для получения случайной точки мы будем запрашивать случайную
-        // координату этой решётки (их всего 30х30=900).
+        // координату этой решётки (их всего 100х100=10000).
         // после нам останется только перевести координаты на решётке
         // в координаты СК задачи
-        CoordinateSystem2i addGrid = new CoordinateSystem2i(30, 30);
+        CoordinateSystem2i addGrid = new CoordinateSystem2i(100, 100);
 
         // повторяем заданное количество раз
         for (int i = 0; i < cnt; i++) {
             // получаем случайные координаты на решётке
-            Vector2i gridPos = addGrid.getRandomCoords();
+            Vector2i gridPos1 = addGrid.getRandomCoords();
             // получаем координаты в СК задачи
-            Vector2d pos = ownCS.getCoords(gridPos, addGrid);
-            // сработает примерно в половине случаев
-            if (ThreadLocalRandom.current().nextBoolean())
-                addPoint(pos, Point.PointSet.FIRST_SET);
-            else
-                addPoint(pos, Point.PointSet.SECOND_SET);
+            Vector2d pos1 = ownCS.getCoords(gridPos1, addGrid);
+            // получаем случайные координаты на решётке
+            Vector2i gridPos2 = addGrid.getRandomCoords();
+            // получаем координаты в СК задачи
+            Vector2d pos2 = ownCS.getCoords(gridPos2, addGrid);
+            // получаем случайные координаты на решётке
+            Vector2i gridPos3 = addGrid.getRandomCoords();
+            // получаем координаты в СК задачи
+            Vector2d pos3 = ownCS.getCoords(gridPos3, addGrid);
+            addRect(pos1, pos2, pos3);
         }
     }
 
