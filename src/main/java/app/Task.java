@@ -55,7 +55,14 @@ public class Task {
      * Размер точки
      */
     private static final int POINT_SIZE = 3;
-
+    /**
+     * Счетчик кликов
+     */
+    private static int MouseCount = 0;
+    /**
+     * Массив кликов, после его заполнения создается прямоугольник
+     */
+    private final Vector2d[] clicks = new Vector2d[3];
     /**
      * последняя СК окна
      */
@@ -188,13 +195,12 @@ public class Task {
     public void click(Vector2i pos, MouseButton mouseButton) {
         if (lastWindowCS == null) return;
         // получаем положение на экране
-        Vector2d taskPos = ownCS.getCoords(pos, lastWindowCS);
-        // если левая кнопка мыши, добавляем в первое множество
+        clicks[MouseCount % 3] = ownCS.getCoords(pos, lastWindowCS);
+        //PanelLog.info("(" + clicks[(MouseCount+1) % 2] + ")");
         if (mouseButton.equals(MouseButton.PRIMARY)) {
-            addPoint(taskPos, Point.PointSet.FIRST_SET);
-            // если правая, то во второе
-        } else if (mouseButton.equals(MouseButton.SECONDARY)) {
-            addPoint(taskPos, Point.PointSet.SECOND_SET);
+            MouseCount++;
+            if ((MouseCount % 3 == 0) && (MouseCount > 0))
+                addRect(clicks[0], clicks[1], clicks[2]);
         }
     }
     /**
