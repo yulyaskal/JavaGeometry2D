@@ -1,6 +1,7 @@
 package panels;
 
 import app.Point;
+import app.Rect;
 import app.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.humbleui.jwm.Event;
@@ -50,8 +51,10 @@ public class PanelRendering extends GridPanel {
         CoordinateSystem2d cs = new CoordinateSystem2d(
                 new Vector2d(-10.0, -10.0), new Vector2d(10.0, 10.0)
         );
-        // создаём задачу без точек
-        task = new Task(cs, new ArrayList<>(), new ArrayList<>());
+        // создаём задачу без прямоугольников
+        task = new Task(cs, new ArrayList<>());
+        // добавляем 5 случайных
+        PanelRendering.task.addRandomRects(5);
     }
 
     /**

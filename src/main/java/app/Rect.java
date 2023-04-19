@@ -10,10 +10,12 @@ import java.util.Objects;
 public class Rect { //Прямоугольник задается двумя вершинами одной из сторон, а также точкой, лежащей на прямой, проходящей через две другие вершины.
 
     /**
-     * Вершины, лежащие на одной из сторон и точка, лежащая на противоположной стороне
+     * Вершины, прямоугольника и точка, нужная для его задания
      */
     public final Vector2d pointA;
     public final Vector2d pointB;
+    public final Vector2d pointC;
+    public final Vector2d pointD;
     public final Vector2d pointP;
     /**
      * Конструктор прямоугольника
@@ -27,14 +29,19 @@ public class Rect { //Прямоугольник задается двумя в�
         this.pointA = pointA;
         this.pointB = pointB;
         this.pointP = pointP;
+        Line line = new Line(this.pointA, this.pointB);
+        // рассчитываем расстояние от прямой до точки
+        double dist = line.getDistance(this.pointP);
+        // рассчитываем векторы для векторного умножения
+        Vector2d AB = Vector2d.subtract(this.pointB, this.pointA);
+        Vector2d AP = Vector2d.subtract(this.pointP, this.pointA);
+        // определяем направление смещения
+        double direction = Math.signum(AB.cross(AP));
+        // получаем вектор смещения
+        Vector2d offset = AB.rotated(Math.PI / 2 * direction).norm().mult(dist);
+        this.pointC = Vector2d.sum(this.pointB, offset);
+        this.pointD = Vector2d.sum(this.pointA, offset);
     }
-    /**
-     * Вершины прямоугольника, обновляются после изменения размеров окна, нужны для решения задачи
-     */
-    public Vector2i pA = null;
-    public Vector2i pB = null;
-    public Vector2i pC = null;
-    public Vector2i pD = null;
     /**
      * Получить положение первой вершины прямоугольника
      *

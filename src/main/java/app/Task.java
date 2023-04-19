@@ -42,19 +42,10 @@ public class Task {
     @Getter
     private final CoordinateSystem2d ownCS;
     /**
-     * Список точек
-     */
-    @Getter
-    private final ArrayList<Point> points;
-    /**
      * Список прямоугольников
      */
     @Getter
     private final ArrayList<app.Rect> rects;
-    /**
-     * Размер точки
-     */
-    private static final int POINT_SIZE = 3;
     /**
      * Счетчик кликов
      */
@@ -72,18 +63,6 @@ public class Task {
      */
     private boolean solved;
     /**
-     * Список точек в пересечении
-     */
-    @Getter
-    @JsonIgnore
-    private final ArrayList<Point> crossed;
-    /**
-     * Список точек в разности
-     */
-    @Getter
-    @JsonIgnore
-    private final ArrayList<Point> single;
-    /**
      * Список точек пересечения
      */
     @Getter
@@ -93,19 +72,15 @@ public class Task {
      * Задача
      *
      * @param ownCS  СК задачи
-     * @param points массив точек
+     * @param rects массив прямоуголь
      */
     @JsonCreator
     public Task(
             @JsonProperty("ownCS") CoordinateSystem2d ownCS,
-            @JsonProperty("points") ArrayList<Point> points,
             @JsonProperty("rects") ArrayList<app.Rect> rects
     ) {
         this.ownCS = ownCS;
-        this.points = points;
         this.rects = rects;
-        this.crossed = new ArrayList<>();
-        this.single = new ArrayList<>();
         this.interPoints = new ArrayList<>();
     }
 
@@ -123,54 +98,51 @@ public class Task {
         // создаём перо
         try (var paint = new Paint()) {
             for (app.Rect r : rects) {
+                paint.setColor(LABEL_TEXT_COLOR);
+                // координаты прямоугольника в СК окна
                 // y-координату разворачиваем, потому что у СК окна ось y направлена вниз,
                 // а в классическом представлении - вверх
                 Vector2i windowPosA = windowCS.getCoords(r.pointA.x, r.pointA.y, ownCS);
                 Vector2i windowPosB = windowCS.getCoords(r.pointB.x, r.pointB.y, ownCS);
-                Vector2i windowPosP = windowCS.getCoords(r.pointP.x, r.pointP.y, ownCS);
-                // создаём линию
-                Line line = new Line(new Vector2d(windowPosA), new Vector2d(windowPosB));
-                // рассчитываем расстояние от прямой до точки
-                double dist = line.getDistance(new Vector2d(windowPosP));
-                // рассчитываем векторы для векторного умножения
-                Vector2d AB = Vector2d.subtract(new Vector2d(windowPosB), new Vector2d(windowPosA));
-                Vector2d AP = Vector2d.subtract(new Vector2d(windowPosP), new Vector2d(windowPosA));
-                // определяем направление смещения
-                double direction = Math.signum(AB.cross(AP));
-                // получаем вектор смещения
-                Vector2i offset = AB.rotated(Math.PI / 2 * direction).norm().mult(dist).intVector();
-
-                // находим координаты вторых двух вершин прямоугольника
-                Vector2i pointC = Vector2i.sum(windowPosB, offset);
-                Vector2i pointD = Vector2i.sum(windowPosA, offset);
-                //запоминаем координаты всех четырех вершин
-                r.pA = windowPosA;
-                r.pB = windowPosB;
-                r.pC = pointC;
-                r.pD = pointD;
-                paint.setColor(LABEL_TEXT_COLOR);
+                Vector2i windowPosC = windowCS.getCoords(r.pointC.x, r.pointC.y, ownCS);
+                Vector2i windowPosD = windowCS.getCoords(r.pointD.x, r.pointD.y, ownCS);
                 // рисуем его стороны
                 canvas.drawLine(windowPosA.x, windowPosA.y, windowPosB.x, windowPosB.y, paint);
-                canvas.drawLine(windowPosB.x, windowPosB.y, pointC.x, pointC.y, paint);
-                canvas.drawLine(pointC.x, pointC.y, pointD.x, pointD.y, paint);
-                canvas.drawLine(pointD.x, pointD.y, windowPosA.x, windowPosA.y, paint);
+                canvas.drawLine(windowPosB.x, windowPosB.y, windowPosC.x, windowPosC.y, paint);
+                canvas.drawLine(windowPosC.x, windowPosC.y, windowPosD.x, windowPosD.y, paint);
+                canvas.drawLine(windowPosD.x, windowPosD.y, windowPosA.x, windowPosA.y, paint);
+                if ((solved) && (answer)){
+                    paint.setColor(SUBTRACTED_COLOR);
+                    // координаты отрезка в СК окна
+                    Vector2i windowResultA = windowCS.getCoords(result.pointA.x, result.pointA.y, ownCS);
+                    Vector2i windowResultB = windowCS.getCoords(result.pointB.x, result.pointB.y, ownCS);
+                    // рисуем отрезок-ответ
+                    canvas.drawLine(windowResultA.x, windowResultA.y, windowResultB.x, windowResultB.y, paint);
+                    paint.setColor(CROSSED_COLOR);
+                    // координаты прямоугольника-ответа в СК окна
+                    Vector2i windowPosA1 = windowCS.getCoords(result.rect1.pointA.x, result.rect1.pointA.y, ownCS);
+                    Vector2i windowPosB1 = windowCS.getCoords(result.rect1.pointB.x, result.rect1.pointB.y, ownCS);
+                    Vector2i windowPosC1 = windowCS.getCoords(result.rect1.pointC.x, result.rect1.pointC.y, ownCS);
+                    Vector2i windowPosD1 = windowCS.getCoords(result.rect1.pointD.x, result.rect1.pointD.y, ownCS);
+                    // рисуем ответ
+                    canvas.drawLine(windowPosA1.x, windowPosA1.y, windowPosB1.x, windowPosB1.y, paint);
+                    canvas.drawLine(windowPosB1.x, windowPosB1.y, windowPosC1.x, windowPosC1.y, paint);
+                    canvas.drawLine(windowPosC1.x, windowPosC1.y, windowPosD1.x, windowPosD1.y, paint);
+                    canvas.drawLine(windowPosD1.x, windowPosD1.y, windowPosA1.x, windowPosA1.y, paint);
+                    // координаты прямоугольника-ответа в СК окна
+                    Vector2i windowPosA2 = windowCS.getCoords(result.rect2.pointA.x, result.rect2.pointA.y, ownCS);
+                    Vector2i windowPosB2 = windowCS.getCoords(result.rect2.pointB.x, result.rect2.pointB.y, ownCS);
+                    Vector2i windowPosC2 = windowCS.getCoords(result.rect2.pointC.x, result.rect2.pointC.y, ownCS);
+                    Vector2i windowPosD2 = windowCS.getCoords(result.rect2.pointD.x, result.rect2.pointD.y, ownCS);
+                    // рисуем ответ
+                    canvas.drawLine(windowPosA2.x, windowPosA2.y, windowPosB2.x, windowPosB2.y, paint);
+                    canvas.drawLine(windowPosB2.x, windowPosB2.y, windowPosC2.x, windowPosC2.y, paint);
+                    canvas.drawLine(windowPosC2.x, windowPosC2.y, windowPosD2.x, windowPosD2.y, paint);
+                    canvas.drawLine(windowPosD2.x, windowPosD2.y, windowPosA2.x, windowPosA2.y, paint);
+                }
             }
         }
         canvas.restore();
-    }
-
-    /**
-     * Добавить точку
-     *
-     * @param pos      положение
-     * @param pointSet множество
-     */
-    public void addPoint(Vector2d pos, Point.PointSet pointSet) {
-        solved = false;
-        Point newPoint = new Point(pos, pointSet);
-        points.add(newPoint);
-        // Добавляем в лог запись информации
-        PanelLog.info("точка " + newPoint + " добавлена в " + newPoint.getSetName());
     }
     /**
      * Добавить прямоугольник
@@ -235,12 +207,29 @@ public class Task {
             addRect(pos1, pos2, pos3);
         }
     }
-
+    /**
+     * Список точек пересечения прямоугольников
+     */
+    ArrayList<Vector2d> InterPoints = new ArrayList<>();
+    /**
+     * Список отрезков, из которых будем искать максимальный
+     */
+    ArrayList<Segment> segments = new ArrayList<>();
+    /**
+     * Отрезок - ответ в задаче
+     */
+    @Getter
+    @JsonIgnore
+    Segment result = null;
+    /**
+     * Существует ли ответ
+     */
+    boolean answer = false;
     /**
      * Очистить задачу
      */
     public void clear() {
-        points.clear();
+        rects.clear();
         solved = false;
     }
     /**
@@ -248,30 +237,59 @@ public class Task {
      */
     public void solve() {
         // очищаем списки
-        crossed.clear();
-        single.clear();
-
-        // перебираем пары точек
-        for (int i = 0; i < points.size(); i++) {
-            for (int j = i + 1; j < points.size(); j++) {
-                // сохраняем точки
-                Point a = points.get(i);
-                Point b = points.get(j);
-                // если точки совпадают по положению
-                if (a.pos.equals(b.pos) && !a.pointSet.equals(b.pointSet)) {
-                    if (!crossed.contains(a)){
-                        crossed.add(a);
-                        crossed.add(b);
+        InterPoints.clear();
+        segments.clear();
+        answer = false;
+        double maxlength = 0.0;  //максимальная длина отрезка
+        for (int i = 0; i < rects.size(); i++) {
+            for (int j = i + 1; j < rects.size(); j++) {  //перебираем все пары прямоугольников
+                app.Rect first = rects.get(i);
+                app.Rect second = rects.get(j);
+                Line[] lines = new Line[8];
+                lines[0] = new Line(first.pointA, first.pointB);
+                lines[1] = new Line(first.pointA, first.pointD);
+                lines[2] = new Line(first.pointB, first.pointC);
+                lines[3] = new Line(first.pointC, first.pointD);
+                lines[4] = new Line(second.pointA, second.pointB);
+                lines[5] = new Line(second.pointA, second.pointD);
+                lines[6] = new Line(second.pointB, second.pointC);
+                lines[7] = new Line(second.pointC, second.pointD);  //8 прямых, построенных по сторонам прямоугольников
+                for (int k = 0; k < 4; k++) {
+                    for (int l = 4; l < 8; l++) {  //перебираем все пары прямых
+                        Vector2d InterCandidate = lines[k].intersection(lines[l]);  //точка пересечения прямых, она может лежать либо на отрезках, либо вне их
+                        if (InterCandidate != null) {  //если точка пересечения есть
+                            if ((((InterCandidate.x >= lines[k].pointA.x) && (InterCandidate.x <= lines[k].pointB.x))
+                                    || (InterCandidate.x <= lines[k].pointA.x) && (InterCandidate.x >= lines[k].pointB.x))
+                                    && (((InterCandidate.y >= lines[k].pointA.y) && (InterCandidate.y <= lines[k].pointB.y))
+                                    || (InterCandidate.y <= lines[k].pointA.y) && (InterCandidate.y >= lines[k].pointB.y)))  //принадлежит ли точка первому отрезку
+                            {
+                                if ((((InterCandidate.x >= lines[l].pointA.x) && (InterCandidate.x <= lines[l].pointB.x))
+                                        || (InterCandidate.x <= lines[l].pointA.x) && (InterCandidate.x >= lines[l].pointB.x))
+                                        && (((InterCandidate.y >= lines[l].pointA.y) && (InterCandidate.y <= lines[l].pointB.y))
+                                        || (InterCandidate.y <= lines[l].pointA.y) && (InterCandidate.y >= lines[l].pointB.y))) //принадлежит ли точка второму отрезку
+                                {
+                                    InterPoints.add(InterCandidate);  //если лежит на обоих отрезках, добавляем в список точек пересечения
+                                }
+                            }
+                        }
                     }
                 }
+                for (int k = 0; k < InterPoints.size(); k++) {
+                    for (int l = k; l < InterPoints.size(); l++) {  //перебираем все точки пересечения (для данной пары прямоугольников)
+                        segments.add(new Segment(InterPoints.get(k), InterPoints.get(l), first, second));  //добавляем все отрезки в список
+                    }
+                }
+                InterPoints.clear();
             }
         }
-
-        /// добавляем вс
-        for (Point point : points)
-            if (!crossed.contains(point))
-                single.add(point);
-
+        for (Segment segment : segments) {
+            if (segment.length() > maxlength) {
+                maxlength = segment.length();
+                result = segment;  //ищем отрезок максимальной длины
+            }
+        }
+        if (result != null)
+            answer = true;
         // задача решена
         solved = true;
     }
@@ -288,5 +306,13 @@ public class Task {
      */
     public boolean isSolved() {
         return solved;
+    }
+    /**
+     * проверка, есть ли ответ
+     *
+     * @return флаг
+     */
+    public boolean isAnswer() {
+        return answer;
     }
 }

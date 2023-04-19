@@ -8,10 +8,10 @@ public class Segment { //класс отрезков, нужен для реше
     /**
      * Начало и конец отрезка, а также прямоугольники, между точками пересечения которых этот отрезок проведен
      */
-    final Vector2d pointA;
-    final Vector2d pointB;
-    final Rect rect1;
-    final Rect rect2;
+    public final Vector2d pointA;
+    public final Vector2d pointB;
+    public final Rect rect1;
+    public final Rect rect2;
     /**
      * Конструктор отрезка
      *

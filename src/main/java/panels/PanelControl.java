@@ -1,5 +1,6 @@
 package panels;
 
+import app.Application;
 import app.Point;
 import app.Rect;
 import app.Task;
@@ -197,10 +198,19 @@ public class PanelControl extends GridPanel {
         solve.setOnClick(() -> {
             if (!PanelRendering.task.isSolved()) {
                 PanelRendering.task.solve();
-                String s = "Задача решена\n" +
-                        "Пересечений: " + PanelRendering.task.getCrossed().size() / 2 + "\n" +
-                        "Отдельных точек: " + PanelRendering.task.getSingle().size();
-                PanelLog.success(s);
+                if (PanelRendering.task.isAnswer()) {
+                    String s = String.format("Задача решена\n" +
+                            "Ответ: отрезок с началом в (%.3f ", PanelRendering.task.getResult().pointA.x) +
+                            String.format(", %.3f)", PanelRendering.task.getResult().pointA.y) +
+                            String.format(" и концом в (%.3f ", PanelRendering.task.getResult().pointB.x) +
+                            String.format(", %.3f)", PanelRendering.task.getResult().pointB.y);
+                            PanelLog.success(s);
+                }
+                else {
+                    String s = "Задача решена\n" +
+                            "Пересечений прямоугольников нет";
+                    PanelLog.success(s);
+                }
                 solve.text = "Сбросить";
             } else {
                 cancelTask();
@@ -229,8 +239,8 @@ public class PanelControl extends GridPanel {
                     button.checkOver(lastWindowCS.getRelativePos(new Vector2i(ee)));
             }
             // событие нажатия мыши
-        } else if (e instanceof EventMouseButton) {
-            if (!lastInside)
+        } else if (e instanceof EventMouseButton ee) {
+            if (!lastInside || !ee.isPressed())
                 return;
 
             Vector2i relPos = lastWindowCS.getRelativePos(lastMove);
