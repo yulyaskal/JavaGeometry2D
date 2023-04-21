@@ -20,14 +20,9 @@ public class Colors {
      */
     public static final int PANEL_BACKGROUND_COLOR = Misc.getColor(32, 0, 0, 0);
     /**
-     * Запрещённый конструктор
-     */
-
-    /**
      * Цвет текста
      */
     public static final int MULTILINE_TEXT_COLOR = Misc.getColor(64, 255, 255, 255);
-
     /**
      * Цвет подложки поля ввода
      */
@@ -48,6 +43,13 @@ public class Colors {
      * Цвет разности
      */
     public static final int SUBTRACTED_COLOR = Misc.getColor(200, 255, 255, 0);
+    /**
+     * Цвет сетки
+     */
+    public static final int TASK_GRID_COLOR = Misc.getColor(64, 255, 255, 255);
+    /**
+     * Запрещённый конструктор
+     */
     private Colors() {
         throw new AssertionError("Вызов этого конструктора запрещён");
 
