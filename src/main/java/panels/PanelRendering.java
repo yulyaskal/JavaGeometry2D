@@ -6,6 +6,7 @@ import app.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.humbleui.jwm.Event;
 import io.github.humbleui.jwm.EventMouseButton;
+import io.github.humbleui.jwm.EventMouseScroll;
 import io.github.humbleui.jwm.Window;
 import io.github.humbleui.skija.Canvas;
 import misc.CoordinateSystem2d;
@@ -75,6 +76,10 @@ public class PanelRendering extends GridPanel {
                     // обрабатываем клик по задаче
                     task.click(lastWindowCS.getRelativePos(lastMove), ee.getButton());
             }
+        } else if (e instanceof EventMouseScroll ee) {
+            if (lastMove != null && lastInside)
+                task.scale(ee.getDeltaY(), lastWindowCS.getRelativePos(lastMove));
+            window.requestFrame();
         }
     }
 
