@@ -11,10 +11,7 @@ import io.github.humbleui.skija.RRect;
 import io.github.humbleui.skija.Surface;
 import misc.CoordinateSystem2i;
 import misc.Misc;
-import panels.PanelControl;
-import panels.PanelHelp;
-import panels.PanelLog;
-import panels.PanelRendering;
+import panels.*;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -89,6 +86,10 @@ public class Application implements Consumer<Event> {
      */
     private final PanelInfo panelInfo;
     /**
+     * Панель выбора файла
+     */
+    private final PanelSelectFile panelSelectFile;
+    /**
      * Конструктор окна приложения
      */
     public Application() {
@@ -117,6 +118,8 @@ public class Application implements Consumer<Event> {
         );
         // панель информации
         panelInfo = new PanelInfo(window, true, DIALOG_BACKGROUND_COLOR, PANEL_PADDING);
+        // Панель выбора файла
+        panelSelectFile = new PanelSelectFile(window, true, DIALOG_BACKGROUND_COLOR, PANEL_PADDING);
         // задаём обработчиком событий текущий объект
         window.setEventListener(this);
         // задаём заголовок
@@ -218,7 +221,7 @@ public class Application implements Consumer<Event> {
             }
         switch (currentMode) {
             case INFO -> panelInfo.accept(e);
-            case FILE -> {}
+            case FILE -> panelSelectFile.accept(e);
             case WORK -> {
                 // передаём события на обработку панелям
                 panelControl.accept(e);
@@ -248,7 +251,7 @@ public class Application implements Consumer<Event> {
         // рисуем диалоги
         switch (currentMode) {
             case INFO -> panelInfo.paint(canvas, windowCS);
-            case FILE -> {}
+            case FILE -> panelSelectFile.paint(canvas, windowCS);
         }
         // восстанавливаем состояние канваса
         canvas.restore();

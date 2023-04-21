@@ -324,6 +324,7 @@ public class Task {
     /**
      * Существует ли ответ
      */
+    @JsonIgnore
     boolean answer = false;
     /**
      * Очистить задачу
@@ -404,6 +405,7 @@ public class Task {
      *
      * @return флаг
      */
+    @JsonIgnore
     public boolean isSolved() {
         return solved;
     }
@@ -412,6 +414,7 @@ public class Task {
      *
      * @return флаг
      */
+    @JsonIgnore
     public boolean isAnswer() {
         return answer;
     }
