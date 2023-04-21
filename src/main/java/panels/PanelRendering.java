@@ -11,6 +11,7 @@ import io.github.humbleui.jwm.Window;
 import io.github.humbleui.skija.Canvas;
 import misc.CoordinateSystem2d;
 import misc.CoordinateSystem2i;
+import misc.Stats;
 import misc.Vector2d;
 
 import java.io.File;
@@ -58,8 +59,12 @@ public class PanelRendering extends GridPanel {
         task = new Task(cs, new ArrayList<>());
         // добавляем 5 случайных
         PanelRendering.task.addRandomRects(5);
+        fpsStats = new Stats();
     }
-
+    /**
+     * Статистика fps
+     */
+    private final Stats fpsStats;
     /**
      * Обработчик событий
      * при перегрузке обязателен вызов реализации предка
@@ -93,7 +98,11 @@ public class PanelRendering extends GridPanel {
      */
     @Override
     public void paintImpl(Canvas canvas, CoordinateSystem2i windowCS) {
+        // рисуем задачу
         task.paint(canvas, windowCS);
+        // рисуем статистику фпс
+        fpsStats.paint(canvas, windowCS, FONT12, padding);
+        // рисуем перекрестие, если мышь внутри области рисования этой панели
         if (lastInside && lastMove != null)
             task.paintMouse(canvas, windowCS, FONT12, lastWindowCS.getRelativePos(lastMove));
     }
