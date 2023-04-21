@@ -8,6 +8,7 @@ import app.Task;
 import java.util.ArrayList;
 
 import controls.*;
+import dialogs.PanelInfo;
 import io.github.humbleui.jwm.*;
 import io.github.humbleui.jwm.Event;
 import io.github.humbleui.jwm.Window;
@@ -204,11 +205,13 @@ public class PanelControl extends GridPanel {
                             String.format(", %.3f)", PanelRendering.task.getResult().pointA.y) +
                             String.format(" и концом в (%.3f ", PanelRendering.task.getResult().pointB.x) +
                             String.format(", %.3f)", PanelRendering.task.getResult().pointB.y);
+                            PanelInfo.show(s + "\n\nНажмите Esc, чтобы вернуться");
                             PanelLog.success(s);
                 }
                 else {
                     String s = "Задача решена\n" +
                             "Пересечений прямоугольников нет";
+                    PanelInfo.show(s + "\n\nНажмите Esc, чтобы вернуться");
                     PanelLog.success(s);
                 }
                 solve.text = "Сбросить";
